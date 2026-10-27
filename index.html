@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elhekma Healthy Care | شركة الحكمة للرعاية الصحية</title>
+
+  <!-- Meta Tags للتهيئة والمشاركة -->
+  <meta name="description" content="يسر شركة الحكمة للرعاية الصحية تقديم أفضل نسب الخصومات الطبية في شبكة المستشفيات، معامل التحاليل، الصيدليات، العيادات الخارجية ومراكز الأشعة.">
+  <meta name="theme-color" content="#0a8f6d">
+
+  <!-- Bootstrap 5 RTL CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- غلاف التطبيق / الموقع المركزي -->
+  <div class="app-container">
+    
+    <!-- 1. شريط التنقل العلوي (Top Nav) -->
+    <header class="top-nav">
+      <div class="brand-wrapper">
+        <div class="brand-logo-badge">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Elhekma Healthy Care</h1>
+          <span>شركة الحكمة للرعاية الصحية</span>
+        </div>
+      </div>
+      
+      <div class="nav-actions">
+        <button class="icon-btn" title="إضافة جهة طبية جديدة" data-bs-toggle="modal" data-bs-target="#addProviderModal">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="icon-btn" title="معلومات التعاقد" onclick="document.getElementById('paperSection').scrollIntoView({behavior: 'smooth'})">
+          <i class="fa-solid fa-file-contract"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. بانر الترحيب الرئيسي (مطابق لموك آب التصميم) -->
+    <section class="hero-banner">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="hero-tag">
+            <i class="fa-solid fa-shield-halved me-1"></i> الرعاية الطبية المعتمدة
+          </span>
+          <h2 class="hero-title">MODERN HEALTH CARE</h2>
+          <p class="hero-subtitle mb-0">
+            يسر شركة الحكمة للرعاية الصحية تقديم شبكة الخدمات والخصومات الطبية الشاملة
+          </p>
+        </div>
+        <div class="hero-graphic">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. شريط البحث السريع والحي -->
+    <div class="search-container">
+      <div class="search-input-group">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          id="mainSearchInput" 
+          class="search-input" 
+          placeholder="ابحث عن طبيب، مستشفى، معمل، صيدلية، أو نسبة الخصم..."
+        >
+        <button id="clearSearchBtn" class="clear-search-btn" title="مسح">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. أقسام الخدمات الطبية (تصميم الموك آب مع البوردر الأخضر والأيقونات) -->
+    <div class="section-header">
+      <h2>أقسام الشبكة الطبية</h2>
+      <span class="text-muted" style="font-size: 0.82rem;">اضغط على أي قسم للتصفح</span>
+    </div>
+
+    <div class="categories-wrapper" id="mockupCategoriesContainer">
+      <!-- يتم تحميل البطاقات ديناميكياً بنفس شكل الموك آب عبر JavaScript -->
+    </div>
+
+    <!-- 5. تفاصيل بنود التعاقد الأساسية (المأخوذة من الورقة الرسمية) -->
+    <section class="paper-box" id="paperSection">
+      <div class="paper-box-header">
+        <div class="paper-box-title">
+          <i class="fa-solid fa-file-signature text-success"></i>
+          <span>الخدمات ونسب الخصم الرسمية (طبقاً للتعاقد)</span>
+        </div>
+        <span class="badge bg-success" style="font-size: 0.78rem;">معتمد</span>
+      </div>
+      <div class="paper-grid" id="paperSummaryGrid">
+        <!-- يتم التحميل ديناميكياً من بيانات الورقة -->
+      </div>
+    </section>
+
+    <!-- 6. أزرار الفلترة السريعة وقائمة الأطباء والمراكز -->
+    <div class="section-header" id="providersSection">
+      <h2>المراكز والأطباء المعتمدين</h2>
+      <span class="badge-counter" id="providersCountBadge">جاري التحميل...</span>
+    </div>
+
+    <!-- تابات الفلترة الأفقية -->
+    <div class="filter-tabs-scroll" id="filterTabsContainer">
+      <!-- يتم التحميل ديناميكياً -->
+    </div>
+
+    <!-- بطاقات الجهات والأطباء والمستشفيات -->
+    <div class="providers-grid" id="providersListContainer">
+      <!-- يتم عرض كروت الأطباء والمراكز هنا -->
+    </div>
+
+    <!-- زر إضافة جهة طبية جديدة -->
+    <div class="add-new-bar">
+      <button class="btn-add-provider" data-bs-toggle="modal" data-bs-target="#addProviderModal">
+        <i class="fa-solid fa-circle-plus fa-lg"></i>
+        <span>هل لديك عيادة، معمل، أو صيدلية ترغب في إضافتها؟ اضغط هنا</span>
+      </button>
+    </div>
+
+  </div> <!-- نهاية app-container -->
+
+  <!-- 7. الزر السفلي الثابت للواتساب (Contact WhatsApp) كما في الموك آب -->
+  <div class="fixed-bottom-bar">
+    <a href="#" id="floatingWhatsAppBtn" target="_blank" class="whatsapp-main-btn">
+      <div class="whatsapp-icon-circle">
+        <i class="fa-brands fa-whatsapp"></i>
+      </div>
+      <span>Contact WhatsApp | تواصل عبر واتساب</span>
+    </a>
+  </div>
+
+  <!-- 8. نافذة إضافة جهة جديدة (Modal) -->
+  <div class="modal fade" id="addProviderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fa-solid fa-user-plus text-success me-2"></i>
+            إضافة جهة طبية جديدة للشبكة
+          </h5>
+          <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <form id="addProviderForm">
+          <div class="modal-body">
+            
+            <div class="mb-3">
+              <label class="form-label">الاسم (طبيب / صيدلية / معمل / مستشفى / مركز) *</label>
+              <input type="text" id="newProviderName" class="form-control" placeholder="مثال: د. محمد سامي - استشاري القلب" required>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">القسم الطبي *</label>
+                <select id="newProviderCategory" class="form-select" required>
+                  <option value="doctors">أطباء وعيادات (Doctors)</option>
+                  <option value="hospitals">مستشفيات ومراكز (Hospitals)</option>
+                  <option value="labs">معامل تحاليل (Labs)</option>
+                  <option value="pharmacies">صيدليات (Pharmacies)</option>
+                  <option value="radiology">مراكز أشعة وسونار (Radiology)</option>
+                  <option value="dental">عيادات أسنان (Dental)</option>
+                  <option value="physiotherapy">علاج طبيعي (Physiotherapy)</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">نسبة الخصم *</label>
+                <input type="text" id="newProviderDiscount" class="form-control" placeholder="مثال: 25%" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">التخصص أو نوع الخدمة</label>
+              <input type="text" id="newProviderType" class="form-control" placeholder="مثال: جراحة أطفال، أشعة مقطعية، أدوية">
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">العنوان / المحافظة</label>
+                <input type="text" id="newProviderLocation" class="form-control" placeholder="مثال: دمنهور - شارع عبد السلام عارف">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">رقم الهاتف أو الواتساب</label>
+                <input type="text" id="newProviderPhone" class="form-control" placeholder="010XXXXXXXX">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">تفاصيل الخدمة والعرض</label>
+              <textarea id="newProviderDetails" class="form-control" rows="2" placeholder="اكتب نبذة عن الخدمات المتوفرة بالخصم..."></textarea>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label">ملاحظات إضافية (اختياري)</label>
+              <input type="text" id="newProviderNotes" class="form-control" placeholder="مثال: الخصم ساري على الكشف فقط، المواعيد يومياً">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+            <button type="submit" class="btn btn-success">
+              <i class="fa-solid fa-check me-1"></i> حفظ وإضافة فورية
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- بيانات التطبيق -->
+  <script src="js/data.js"></script>
+  
+  <!-- المعالج الرئيسي -->
+  <script src="js/main.js"></script>
+
+</body>
+</html>

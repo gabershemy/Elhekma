@@ -1,0 +1,875 @@
+/* ========================================================
+   Elhekma Healthy Care - شركة الحكمة للرعاية الصحية
+   تصميم عصري متجاوب للشاشات الكبيرة والموبايل
+   ======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary: #0a8f6d;
+  --primary-dark: #076d53;
+  --primary-light: #10b981;
+  --primary-bg: #e6f6f2;
+  --secondary: #0284c7;
+  --secondary-dark: #0369a1;
+  --accent-gold: #f59e0b;
+  --dark: #1e293b;
+  --gray-text: #64748b;
+  --light-bg: #f8fafc;
+  --card-border: #108e6f;
+  --card-border-light: rgba(16, 142, 111, 0.25);
+  --white: #ffffff;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(10, 143, 109, 0.09);
+  --shadow-lg: 0 16px 36px rgba(10, 143, 109, 0.15);
+  --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+  background: #f1f5f9;
+  color: var(--dark);
+  line-height: 1.6;
+  direction: rtl;
+  text-align: right;
+  min-height: 100vh;
+  padding-bottom: 90px; /* المساحة للزر الثابت بالأسفل */
+}
+
+/* Container Wrapper */
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--white);
+  min-height: 100vh;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.07);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ========================================================
+   Header & Navigation
+   ======================================================== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--white);
+  border-bottom: 1px solid #edf2f7;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-badge {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 22px;
+  box-shadow: 0 4px 10px rgba(10, 143, 109, 0.3);
+}
+
+.brand-text h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.brand-text span {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--gray-text);
+  letter-spacing: 0.5px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: var(--white);
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  background: var(--primary-bg);
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+/* ========================================================
+   Hero Banner (نفس فكرة التصميم المعروض بالصورة)
+   ======================================================== */
+.hero-banner {
+  margin: 16px 20px;
+  background: linear-gradient(135deg, #097257 0%, #0d9488 55%, #14b8a6 100%);
+  border-radius: var(--radius-lg);
+  padding: 26px 22px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 20%;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-text {
+  max-width: 70%;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.hero-graphic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  animation: pulse-ring 3s infinite;
+}
+
+.hero-graphic i {
+  font-size: 34px;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ========================================================
+   Quick Search & Filter Bar
+   ======================================================== */
+.search-container {
+  padding: 0 20px 16px;
+}
+
+.search-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-group i.search-icon {
+  position: absolute;
+  right: 16px;
+  color: var(--gray-text);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 13px 44px 13px 45px;
+  border-radius: 14px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(10, 143, 109, 0.15);
+}
+
+.clear-search-btn {
+  position: absolute;
+  left: 14px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: none;
+  font-size: 1.1rem;
+}
+
+/* ========================================================
+   Paper Summary Highlights (الخدمات المتوفرة في الورقة)
+   ======================================================== */
+.section-header {
+  padding: 0 20px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-header h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header h2::before {
+  content: '';
+  width: 5px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.badge-counter {
+  background: var(--primary-bg);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ========================================================
+   Category Cards (تصميم الموك اب مع السهم والبوردر الأخضر)
+   ======================================================== */
+.categories-wrapper {
+  padding: 0 20px 20px;
+}
+
+.mockup-category-card {
+  background: var(--white);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.mockup-category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+  background: #fbfdfc;
+}
+
+.mockup-category-card.active {
+  background: var(--primary-bg);
+  border-color: var(--primary-dark);
+}
+
+.card-icon-box {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border: 1.5px solid rgba(16, 142, 111, 0.35);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0fdfa;
+  color: var(--primary);
+  font-size: 24px;
+  margin-left: 16px;
+  transition: var(--transition);
+}
+
+.mockup-category-card:hover .card-icon-box {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.card-details {
+  flex-grow: 1;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.card-title-arabic {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.card-title-en {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #0d9488;
+  background: rgba(13, 148, 136, 0.1);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.card-desc {
+  font-size: 0.86rem;
+  color: var(--gray-text);
+  margin-bottom: 5px;
+  line-height: 1.35;
+}
+
+.card-arrows-indicator {
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.85;
+  transition: var(--transition);
+}
+
+.mockup-category-card:hover .card-arrows-indicator {
+  opacity: 1;
+  transform: translateX(-4px);
+}
+
+/* ========================================================
+   Quick Category Filter Tabs (للتصفح السريع)
+   ======================================================== */
+.filter-tabs-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filter-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  white-space: nowrap;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-btn i {
+  font-size: 0.95rem;
+  color: var(--primary);
+}
+
+.tab-btn.active, .tab-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.tab-btn.active i, .tab-btn:hover i {
+  color: var(--white);
+}
+
+/* ========================================================
+   Official Offerings Highlights (الورقة الرسمية)
+   ======================================================== */
+.paper-box {
+  margin: 0 20px 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbfb 100%);
+  border: 1.5px solid #d1fae5;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  position: relative;
+}
+
+.paper-box-header {
+  border-bottom: 1px dashed #a7f3d0;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paper-box-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.paper-item-card {
+  background: var(--white);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  transition: var(--transition);
+}
+
+.paper-item-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+}
+
+.paper-badge {
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.paper-badge.green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.paper-badge.teal {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.paper-badge.blue {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* ========================================================
+   Provider Cards (قائمة الأطباء والمراكز الشاملة)
+   ======================================================== */
+.providers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  padding: 0 20px 24px;
+}
+
+.provider-card {
+  background: var(--white);
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.provider-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.provider-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.provider-info h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.provider-category-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.discount-ribbon {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 5px 12px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.discount-ribbon.high {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 3px 8px rgba(5, 150, 105, 0.25);
+}
+
+.provider-body {
+  font-size: 0.88rem;
+  color: #475569;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.provider-note {
+  background: #f8fafc;
+  border-right: 3px solid var(--primary);
+  padding: 6px 10px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.8rem;
+  color: #334155;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.provider-meta {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--gray-text);
+}
+
+.provider-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-card-action {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.btn-card-call {
+  background: #f1f5f9;
+  color: var(--dark);
+}
+
+.btn-card-call:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-card-whatsapp {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.btn-card-whatsapp:hover {
+  background: #22c55e;
+  color: var(--white);
+}
+
+/* ========================================================
+   Add New Provider Button & Card
+   ======================================================== */
+.add-new-bar {
+  padding: 0 20px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-add-provider {
+  background: #f8fafc;
+  border: 2px dashed #94a3b8;
+  color: #475569;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.btn-add-provider:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+
+/* ========================================================
+   Fixed Bottom WhatsApp Button (كما في الموك اب بالضبط)
+   ======================================================== */
+.fixed-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #e2e8f0;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.whatsapp-main-btn {
+  max-width: 500px;
+  width: 100%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.whatsapp-main-btn:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+}
+
+.whatsapp-icon-circle {
+  width: 32px;
+  height: 32px;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--white);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ========================================================
+   Empty State & Modal
+   ======================================================== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-text);
+  grid-column: 1 / -1;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+
+.modal-content {
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-lg);
+  direction: rtl;
+  text-align: right;
+}
+
+.modal-header {
+  border-bottom: 1px solid #f1f5f9;
+  padding: 18px 24px;
+}
+
+.modal-title {
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.form-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--dark);
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  font-family: inherit;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 143, 109, 0.15);
+}
+
+/* ========================================================
+   Responsive Media Queries
+   ======================================================== */
+@media (min-width: 992px) {
+  .categories-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .mockup-category-card {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-banner {
+    padding: 20px 16px;
+    margin: 12px 14px;
+  }
+  .hero-title {
+    font-size: 1.2rem;
+  }
+  .hero-text {
+    max-width: 78%;
+  }
+  .hero-graphic {
+    width: 54px;
+    height: 54px;
+  }
+  .hero-graphic i {
+    font-size: 26px;
+  }
+  .search-container, .categories-wrapper, .providers-grid, .section-header, .paper-box, .add-new-bar {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .providers-grid {
+    grid-template-columns: 1fr;
+  }
+}

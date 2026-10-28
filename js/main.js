@@ -8,39 +8,37 @@ let activeCategory = 'all';
 let searchQuery = '';
 let isGoogleSheetConnected = false;
 
-// دالة التهيئة الأولية
+// دالة التهيئة الأولية - قراءة البيانات من Google Sheets فقط
 async function initializeData() {
-  // البدء بالبيانات الافتراضية فوراً لسرعة العرض
-  allProviders = [...medicalProviders];
+  allProviders = [];
 
-  // دمج أي عناصر محفوظة محلياً إن وجدت
-  const savedData = localStorage.getItem('elhekma_custom_providers');
-  if (savedData) {
-    try {
-      const customItems = JSON.parse(savedData);
-      allProviders = [...allProviders, ...customItems];
-    } catch (e) {}
-  }
-
-  // رسم الواجهة المبدئية فوراً
-  updateCategoryCounts();
+  // رسم الواجهة المبدئية
   renderCategoriesMockup();
   renderFilterTabs();
   renderPaperSummary();
-  renderProviders();
   setupWhatsAppButton();
 
-  // جلب أحدث البيانات الحية من Google Sheets
-  if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.enabled) {
-    await fetchLiveGoogleSheetData();
+  // إظهار شارة جاري التحميل الأنيقة
+  const container = document.getElementById('providersListContainer');
+  if (container) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1; padding: 50px 20px;">
+        <i class="fa-solid fa-spinner fa-spin text-success fa-2x mb-3"></i>
+        <h5 style="font-weight: 800; color: #0f172a;">جاري تحميل أحدث البيانات من Google Sheets...</h5>
+        <p class="text-muted" style="font-size: 0.88rem;">يتم الآن قراءة قائمة الأطباء والمراكز ونسب الخصم الحية من جدول البيانات</p>
+      </div>
+    `;
   }
+
+  // جلب البيانات حصرياً من Google Sheets
+  await fetchLiveGoogleSheetData();
 }
 
 // جلب وتحليل البيانات المباشرة من Google Sheets
 async function fetchLiveGoogleSheetData() {
   const syncBadge = document.getElementById('sheetSyncBadge');
   if (syncBadge) {
-    syncBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري مزامنة البيانات من Google Sheets...';
+    syncBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري تحديث البيانات من Google Sheets...';
     syncBadge.className = 'sheet-sync-status syncing';
     syncBadge.style.display = 'inline-flex';
   }
@@ -95,10 +93,8 @@ async function fetchLiveGoogleSheetData() {
       }
 
       if (parsedItems.length > 0) {
-        // دمج بيانات شيت جوجل مع أي أطباء مسجلين في كود الموقع لمنع أي نقص
-        const sheetNames = new Set(parsedItems.map(p => p.name.replace(/^(د\.|دكتور\s*)/, '').trim().toLowerCase()));
-        const missingDefaults = medicalProviders.filter(p => !sheetNames.has(p.name.replace(/^(د\.|دكتور\s*)/, '').trim().toLowerCase()));
-        allProviders = [...parsedItems, ...missingDefaults];
+        // قراءة وتعيين البيانات فقط وحصرياً من Google Sheets
+        allProviders = parsedItems;
         isGoogleSheetConnected = true;
 
         updateCategoryCounts();
@@ -107,15 +103,15 @@ async function fetchLiveGoogleSheetData() {
         renderProviders();
 
         if (syncBadge) {
-          syncBadge.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> متصل مع Google Sheets مباشرة (محدث)';
+          syncBadge.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> يتم العرض من Google Sheets مباشرة';
           syncBadge.className = 'sheet-sync-status connected';
         }
       }
     }
   } catch (error) {
-    console.warn("Could not sync with Google Sheets, using offline/default data:", error);
+    console.warn("Could not sync with Google Sheets:", error);
     if (syncBadge) {
-      syncBadge.innerHTML = '<i class="fa-solid fa-cloud-arrow-down me-1"></i> يتم استخدام البيانات المخزنة محلياً';
+      syncBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-danger me-1"></i> تعذر الاتصال بـ Google Sheets';
       syncBadge.className = 'sheet-sync-status fallback';
     }
   }

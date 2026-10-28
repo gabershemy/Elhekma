@@ -95,7 +95,10 @@ async function fetchLiveGoogleSheetData() {
       }
 
       if (parsedItems.length > 0) {
-        allProviders = parsedItems;
+        // دمج بيانات شيت جوجل مع أي أطباء مسجلين في كود الموقع لمنع أي نقص
+        const sheetNames = new Set(parsedItems.map(p => p.name.replace(/^(د\.|دكتور\s*)/, '').trim().toLowerCase()));
+        const missingDefaults = medicalProviders.filter(p => !sheetNames.has(p.name.replace(/^(د\.|دكتور\s*)/, '').trim().toLowerCase()));
+        allProviders = [...parsedItems, ...missingDefaults];
         isGoogleSheetConnected = true;
 
         updateCategoryCounts();
@@ -333,13 +336,13 @@ function renderProviders() {
         <div>
           <div class="provider-meta">
             <span><i class="fa-solid fa-location-dot me-1 text-danger"></i> ${item.location || 'دمنهور / البحيرة'}</span>
-            <span><i class="fa-solid fa-shield-halved me-1 text-success"></i> تعاقد معتمد</span>
+            ${item.phone ? `<span><i class="fa-solid fa-phone me-1 text-primary"></i> ${item.phone}</span>` : '<span><i class="fa-solid fa-shield-halved me-1 text-success"></i> تعاقد معتمد</span>'}
           </div>
 
           <div class="provider-actions">
-            <a href="tel:${item.phone || companyInfo.phone}" class="btn-card-action btn-card-call">
+            <a href="tel:${item.phone || companyInfo.phone}" class="btn-card-action btn-card-call" title="حجز أو اتصال">
               <i class="fa-solid fa-phone"></i>
-              <span>اتصال</span>
+              <span>اتصال للحجز</span>
             </a>
             <a href="https://wa.me/${formatWhatsAppNumber(companyInfo.whatsappNumber)}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن كارت الخصم والتعاقد مع: ' + item.name)}" 
                target="_blank" 

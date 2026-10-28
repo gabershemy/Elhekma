@@ -36,8 +36,11 @@
       </div>
       
       <div class="nav-actions">
-        <button class="icon-btn" title="إضافة جهة طبية جديدة" data-bs-toggle="modal" data-bs-target="#addProviderModal">
-          <i class="fa-solid fa-plus"></i>
+        <a href="https://docs.google.com/spreadsheets/d/1LuIiBooXXrQKo8F2My97dS5QwbJm69kq0cKjAHnvw7M/edit" target="_blank" class="icon-btn" title="تعديل الشيت على Google Drive">
+          <i class="fa-solid fa-table"></i>
+        </a>
+        <button id="manualSyncBtn" class="icon-btn" title="تحديث وتنزيل البيانات الحية الآن">
+          <i class="fa-solid fa-rotate"></i>
         </button>
         <button class="icon-btn" title="معلومات التعاقد" onclick="document.getElementById('paperSection').scrollIntoView({behavior: 'smooth'})">
           <i class="fa-solid fa-file-contract"></i>
@@ -77,6 +80,17 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
+    </div>
+
+    <!-- شريط حالة الاتصال بجدول البيانات Google Sheets -->
+    <div class="sheet-sync-bar">
+      <span id="sheetSyncBadge" class="sheet-sync-status">
+        <i class="fa-solid fa-spinner fa-spin me-1"></i> جاري الاتصال بـ Google Sheets...
+      </span>
+      <a href="https://docs.google.com/spreadsheets/d/1LuIiBooXXrQKo8F2My97dS5QwbJm69kq0cKjAHnvw7M/edit" target="_blank" class="sheet-edit-link">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>فتح وتعديل الجدول</span>
+      </a>
     </div>
 
     <!-- 4. أقسام الخدمات الطبية (تصميم الموك آب مع البوردر الأخضر والأيقونات) -->
@@ -119,12 +133,12 @@
       <!-- يتم عرض كروت الأطباء والمراكز هنا -->
     </div>
 
-    <!-- زر إضافة جهة طبية جديدة -->
+    <!-- زر إضافة جهة طبية جديدة أو فتح الشيت -->
     <div class="add-new-bar">
-      <button class="btn-add-provider" data-bs-toggle="modal" data-bs-target="#addProviderModal">
-        <i class="fa-solid fa-circle-plus fa-lg"></i>
-        <span>هل لديك عيادة، معمل، أو صيدلية ترغب في إضافتها؟ اضغط هنا</span>
-      </button>
+      <a href="https://docs.google.com/spreadsheets/d/1LuIiBooXXrQKo8F2My97dS5QwbJm69kq0cKjAHnvw7M/edit" target="_blank" class="btn-add-provider text-decoration-none">
+        <i class="fa-solid fa-file-excel fa-lg text-success"></i>
+        <span>هل تريد إضافة دكتور أو مركز جديد؟ اضغط هنا لفتح Google Sheets وإضافته فوراً</span>
+      </a>
     </div>
 
   </div> <!-- نهاية app-container -->

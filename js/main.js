@@ -1,32 +1,179 @@
 /**
  * Elhekma Healthy Care - Main Logic
- * تحكم كامل في عرض البيانات، البحث الفوري، الفلترة وإضافة جهات جديدة
+ * تحكم كامل في عرض البيانات، الربط مع Google Sheets، البحث الفوري والفلترة
  */
 
-// جلب البيانات من LocalStorage إن وجدت أو استخدام البيانات الافتراضية
 let allProviders = [];
 let activeCategory = 'all';
 let searchQuery = '';
+let isGoogleSheetConnected = false;
 
-function initializeData() {
+// دالة التهيئة الأولية
+async function initializeData() {
+  // البدء بالبيانات الافتراضية فوراً لسرعة العرض
+  allProviders = [...medicalProviders];
+
+  // دمج أي عناصر محفوظة محلياً إن وجدت
   const savedData = localStorage.getItem('elhekma_custom_providers');
   if (savedData) {
     try {
       const customItems = JSON.parse(savedData);
-      allProviders = [...medicalProviders, ...customItems];
-    } catch (e) {
-      allProviders = [...medicalProviders];
-    }
-  } else {
-    allProviders = [...medicalProviders];
+      allProviders = [...allProviders, ...customItems];
+    } catch (e) {}
   }
 
+  // رسم الواجهة المبدئية فوراً
   updateCategoryCounts();
   renderCategoriesMockup();
   renderFilterTabs();
   renderPaperSummary();
   renderProviders();
   setupWhatsAppButton();
+
+  // جلب أحدث البيانات الحية من Google Sheets
+  if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.enabled) {
+    await fetchLiveGoogleSheetData();
+  }
+}
+
+// جلب وتحليل البيانات المباشرة من Google Sheets
+async function fetchLiveGoogleSheetData() {
+  const syncBadge = document.getElementById('sheetSyncBadge');
+  if (syncBadge) {
+    syncBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> جاري مزامنة البيانات من Google Sheets...';
+    syncBadge.className = 'sheet-sync-status syncing';
+    syncBadge.style.display = 'inline-flex';
+  }
+
+  try {
+    const response = await fetch(GOOGLE_SHEETS_CONFIG.getCsvUrl());
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const csvText = await response.text();
+    const rows = parseCSV(csvText);
+
+    if (rows && rows.length > 1) {
+      const headers = rows[0].map(h => h.trim().toLowerCase());
+      
+      // مطابقة أماكن الأعمدة
+      const nameIdx = headers.findIndex(h => h.includes('اسم') || h.includes('name'));
+      const catIdx = headers.findIndex(h => h.includes('قسم') || h.includes('category'));
+      const discIdx = headers.findIndex(h => h.includes('خصم') || h.includes('discount'));
+      const typeIdx = headers.findIndex(h => h.includes('تخصص') || h.includes('نوع') || h.includes('type'));
+      const locIdx = headers.findIndex(h => h.includes('موقع') || h.includes('عنوان') || h.includes('location'));
+      const phoneIdx = headers.findIndex(h => h.includes('هاتف') || h.includes('تليفون') || h.includes('phone'));
+      const detailsIdx = headers.findIndex(h => h.includes('تفاصيل') || h.includes('details'));
+      const notesIdx = headers.findIndex(h => h.includes('ملاحظ') || h.includes('notes'));
+
+      const parsedItems = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const name = nameIdx !== -1 ? row[nameIdx] : row[0];
+        if (!name || name.trim() === '') continue;
+
+        const rawCat = catIdx !== -1 ? row[catIdx] : (row[1] || 'doctors');
+        const disc = discIdx !== -1 ? row[discIdx] : (row[2] || '20%');
+        const type = typeIdx !== -1 ? row[typeIdx] : (row[3] || 'جهة معتمدة');
+        const loc = locIdx !== -1 ? row[locIdx] : (row[4] || 'دمنهور / البحيرة');
+        const phone = phoneIdx !== -1 ? row[phoneIdx] : (row[5] || companyInfo.phone);
+        const details = detailsIdx !== -1 ? row[detailsIdx] : (row[6] || '');
+        const notes = notesIdx !== -1 ? row[notesIdx] : (row[7] || '');
+
+        parsedItems.push({
+          id: `sheet-${i}`,
+          name: name.trim(),
+          category: normalizeCategory(rawCat),
+          type: type.trim(),
+          discount: disc.trim(),
+          details: details.trim() || `خصم ${disc} لعملاء بطاقة الحكمة للرعاية الصحية.`,
+          notes: notes.trim(),
+          location: loc.trim() || 'دمنهور / البحيرة',
+          phone: phone.trim() || companyInfo.phone,
+          isFromGoogleSheet: true
+        });
+      }
+
+      if (parsedItems.length > 0) {
+        allProviders = parsedItems;
+        isGoogleSheetConnected = true;
+
+        updateCategoryCounts();
+        renderCategoriesMockup();
+        renderFilterTabs();
+        renderProviders();
+
+        if (syncBadge) {
+          syncBadge.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> متصل مع Google Sheets مباشرة (محدث)';
+          syncBadge.className = 'sheet-sync-status connected';
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Could not sync with Google Sheets, using offline/default data:", error);
+    if (syncBadge) {
+      syncBadge.innerHTML = '<i class="fa-solid fa-cloud-arrow-down me-1"></i> يتم استخدام البيانات المخزنة محلياً';
+      syncBadge.className = 'sheet-sync-status fallback';
+    }
+  }
+}
+
+// دالة تحليل ملف CSV والتعامل مع الفواصل وعلامات التنصيص
+function parseCSV(text) {
+  const lines = [];
+  let row = [];
+  let inQuotes = false;
+  let currentVal = '';
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+
+    if (c === '"') {
+      if (inQuotes && next === '"') {
+        currentVal += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (c === ',' && !inQuotes) {
+      row.push(currentVal.trim());
+      currentVal = '';
+    } else if ((c === '\r' || c === '\n') && !inQuotes) {
+      if (c === '\r' && next === '\n') {
+        i++;
+      }
+      row.push(currentVal.trim());
+      currentVal = '';
+      if (row.length > 0 && row.some(cell => cell.length > 0)) {
+        lines.push(row);
+      }
+      row = [];
+    } else {
+      currentVal += c;
+    }
+  }
+  if (currentVal.length > 0 || row.length > 0) {
+    row.push(currentVal.trim());
+    if (row.some(cell => cell.length > 0)) {
+      lines.push(row);
+    }
+  }
+  return lines;
+}
+
+// مطابقة أسماء الأقسام العربية والإنجليزية
+function normalizeCategory(cat) {
+  if (!cat) return 'doctors';
+  const c = cat.toLowerCase().trim();
+  if (c.includes('مستشف') || c.includes('hospital')) return 'hospitals';
+  if (c.includes('معمل') || c.includes('تحاليل') || c.includes('lab')) return 'labs';
+  if (c.includes('صيدل') || c.includes('pharm')) return 'pharmacies';
+  if (c.includes('أشعة') || c.includes('اشعه') || c.includes('سونار') || c.includes('radio')) return 'radiology';
+  if (c.includes('أسنان') || c.includes('اسنان') || c.includes('dent')) return 'dental';
+  if (c.includes('علاج') || c.includes('طبيعي') || c.includes('physio')) return 'physiotherapy';
+  if (c.includes('طبيب') || c.includes('أطباء') || c.includes('اطباء') || c.includes('عياد') || c.includes('doctor')) return 'doctors';
+  return 'doctors';
 }
 
 // حساب عدد الجهات لكل قسم
@@ -40,12 +187,11 @@ function updateCategoryCounts() {
   });
 }
 
-// رسم بطاقات الأقسام العلوية المطابقة تماماً لموك آب الصورة (Mockup Image 2)
+// رسم بطاقات الأقسام العلوية المطابقة تماماً لموك آب الصورة
 function renderCategoriesMockup() {
   const container = document.getElementById('mockupCategoriesContainer');
   if (!container) return;
 
-  // استبعاد "الكل" من البطاقات العريضة لتكون كفئات رئيسية مثل الموك آب
   const displayCats = medicalCategories.filter(c => c.id !== 'all');
 
   container.innerHTML = displayCats.map(cat => `
@@ -87,7 +233,7 @@ function renderFilterTabs() {
   `).join('');
 }
 
-// رسم ملخص الورقة الرسمية (الخدمات المتوفرة ونسب الخصم الأساسية)
+// رسم ملخص بنود الورقة الرسمية
 function renderPaperSummary() {
   const container = document.getElementById('paperSummaryGrid');
   if (!container) return;
@@ -111,13 +257,12 @@ function getBadgeColor(discount) {
   return 'blue';
 }
 
-// رسم قائمة الجهات والخصومات (Providers)
+// رسم قائمة الجهات والخصومات
 function renderProviders() {
   const container = document.getElementById('providersListContainer');
   const countBadge = document.getElementById('providersCountBadge');
   if (!container) return;
 
-  // فلترة حسب الفئة والبحث
   let filtered = allProviders.filter(item => {
     const matchCategory = (activeCategory === 'all' || item.category === activeCategory);
     
@@ -135,7 +280,7 @@ function renderProviders() {
   });
 
   if (countBadge) {
-    countBadge.textContent = `${filtered.length} جهة طبية متوفرة`;
+    countBadge.textContent = `${filtered.length} جهة متوفرة`;
   }
 
   if (filtered.length === 0) {
@@ -238,7 +383,7 @@ function resetFilters() {
   renderProviders();
 }
 
-// ربط البحث الفوري
+// ربط البحث الفوري والتحكم
 document.addEventListener('DOMContentLoaded', () => {
   initializeData();
 
@@ -264,70 +409,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // معالجة نموذج إضافة جهة جديدة
-  const addForm = document.getElementById('addProviderForm');
-  if (addForm) {
-    addForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleAddNewProvider();
+  // زر تحديث البيانات اليدوي
+  const refreshBtn = document.getElementById('manualSyncBtn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async () => {
+      refreshBtn.querySelector('i').classList.add('fa-spin');
+      await fetchLiveGoogleSheetData();
+      setTimeout(() => {
+        refreshBtn.querySelector('i').classList.remove('fa-spin');
+      }, 500);
     });
   }
 });
-
-// إضافة جهة جديدة وحفظها في التخزين المحلي LocalStorage
-function handleAddNewProvider() {
-  const name = document.getElementById('newProviderName').value.trim();
-  const category = document.getElementById('newProviderCategory').value;
-  const discount = document.getElementById('newProviderDiscount').value.trim();
-  const type = document.getElementById('newProviderType').value.trim();
-  const location = document.getElementById('newProviderLocation').value.trim() || 'دمنهور / البحيرة';
-  const phone = document.getElementById('newProviderPhone').value.trim() || companyInfo.phone;
-  const details = document.getElementById('newProviderDetails').value.trim();
-  const notes = document.getElementById('newProviderNotes').value.trim();
-
-  if (!name || !discount) {
-    alert('يرجى كتابة الاسم ونسبة الخصم على الأقل');
-    return;
-  }
-
-  const newItem = {
-    id: Date.now(),
-    name,
-    category,
-    type: type || 'جهة طبية معتمدة',
-    discount: discount.includes('%') ? discount : discount + '%',
-    details: details || `خصم ${discount} لعملاء بطاقة الحكمة للرعاية الصحية.`,
-    notes: notes || 'مضاف حديثاً للشبكة الطبية',
-    location,
-    phone,
-    isCustom: true
-  };
-
-  // حفظ في التخزين المحلي
-  let customItems = [];
-  try {
-    const saved = localStorage.getItem('elhekma_custom_providers');
-    if (saved) customItems = JSON.parse(saved);
-  } catch (err) {}
-
-  customItems.push(newItem);
-  localStorage.setItem('elhekma_custom_providers', JSON.stringify(customItems));
-
-  // تحديث القائمة
-  allProviders.push(newItem);
-  updateCategoryCounts();
-  renderCategoriesMockup();
-  renderFilterTabs();
-  renderProviders();
-
-  // إغلاق النافذة وإعادة تعيين النموذج
-  const modalEl = document.getElementById('addProviderModal');
-  const modalInstance = bootstrap.Modal.getInstance(modalEl);
-  if (modalInstance) modalInstance.hide();
-  document.getElementById('addProviderForm').reset();
-
-  alert('تمت إضافة الجهة الطبية بنجاح وحفظها في الموقع!');
-}
 
 // إعداد زر الواتساب السفلي
 function setupWhatsAppButton() {

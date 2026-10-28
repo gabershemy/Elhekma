@@ -1,5 +1,16 @@
+// إعدادات الربط المباشر مع Google Sheets
+const GOOGLE_SHEETS_CONFIG = {
+  enabled: true,
+  sheetId: "1LuIiBooXXrQKo8F2My97dS5QwbJm69kq0cKjAHnvw7M",
+  editUrl: "https://docs.google.com/spreadsheets/d/1LuIiBooXXrQKo8F2My97dS5QwbJm69kq0cKjAHnvw7M/edit",
+  getCsvUrl: function() {
+    return `https://docs.google.com/spreadsheets/d/${this.sheetId}/gviz/tq?tqx=out:csv&tq&headers=1&_t=${Date.now()}`;
+  }
+};
+
 /**
  * بيانات الخدمات الطبية والتعاقدات - شركة الحكمة للرعاية الصحية
+
  * يمكنك إضافة أو تعديل أي بيانات هنا بكل سهولة!
  */
 

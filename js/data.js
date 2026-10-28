@@ -349,10 +349,10 @@ const companyInfo = {
   nameAr: "شركة الحكمة للرعاية الصحية",
   nameEn: "Elhekma Healthy Care",
   slogan: "رعايتكم الصحية أولويتنا - أفضل الخصومات الطبية في شبكة واحدة",
-  whatsappNumber: "+201000000000", // يمكنك تغييره لرقم الواتساب الفعلي
-  whatsappDisplay: "010 0000 0000",
+  whatsappNumber: "+201018101043", // رقم الواتساب الفعلي المعتمد
+  whatsappDisplay: "010 1810 1043",
   whatsappMessage: "السلام عليكم، أرغب في الاستفسار عن كارت خدمات وخصومات شركة الحكمة للرعاية الصحية",
-  phone: "01000000000",
+  phone: "01018101043",
   email: "info@elhekma-care.com",
   address: "دمنهور - البحيرة - مصر"
 };

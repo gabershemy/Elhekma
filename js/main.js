@@ -60,6 +60,7 @@ async function fetchLiveGoogleSheetData() {
       const typeIdx = headers.findIndex(h => h.includes('تخصص') || h.includes('نوع') || h.includes('type'));
       const locIdx = headers.findIndex(h => h.includes('موقع') || h.includes('عنوان') || h.includes('location'));
       const phoneIdx = headers.findIndex(h => h.includes('هاتف') || h.includes('تليفون') || h.includes('phone'));
+      const waIdx = headers.findIndex(h => h.includes('واتس') || h.includes('whatsapp'));
       const detailsIdx = headers.findIndex(h => h.includes('تفاصيل') || h.includes('details'));
       const notesIdx = headers.findIndex(h => h.includes('ملاحظ') || h.includes('notes'));
 
@@ -70,11 +71,23 @@ async function fetchLiveGoogleSheetData() {
         const name = nameIdx !== -1 ? row[nameIdx] : row[0];
         if (!name || name.trim() === '') continue;
 
+        // التحقق إذا كان السطر مخصص لضبط رقم واتساب الشركة العام
+        const cleanName = name.trim().toLowerCase();
+        if (cleanName.includes('واتساب') || cleanName.includes('whatsapp') || cleanName.includes('رقم الشركة')) {
+          const customWa = (waIdx !== -1 && row[waIdx]) ? row[waIdx] : (phoneIdx !== -1 ? row[phoneIdx] : '');
+          if (customWa && customWa.trim()) {
+            companyInfo.whatsappNumber = customWa.trim();
+            setupWhatsAppButton();
+          }
+          continue; // لا نظهره ككارت طبيب
+        }
+
         const rawCat = catIdx !== -1 ? row[catIdx] : (row[1] || 'doctors');
         const disc = discIdx !== -1 ? row[discIdx] : (row[2] || '20%');
         const type = typeIdx !== -1 ? row[typeIdx] : (row[3] || 'جهة معتمدة');
         const loc = locIdx !== -1 ? row[locIdx] : (row[4] || 'دمنهور / البحيرة');
         const phone = phoneIdx !== -1 ? row[phoneIdx] : (row[5] || companyInfo.phone);
+        const itemWa = (waIdx !== -1 && row[waIdx]) ? row[waIdx].trim() : null;
         const details = detailsIdx !== -1 ? row[detailsIdx] : (row[6] || '');
         const notes = notesIdx !== -1 ? row[notesIdx] : (row[7] || '');
 
@@ -88,6 +101,7 @@ async function fetchLiveGoogleSheetData() {
           notes: notes.trim(),
           location: loc.trim() || 'دمنهور / البحيرة',
           phone: phone.trim() || companyInfo.phone,
+          whatsapp: itemWa,
           isFromGoogleSheet: true
         });
       }
@@ -340,7 +354,7 @@ function renderProviders() {
               <i class="fa-solid fa-phone"></i>
               <span>اتصال للحجز</span>
             </a>
-            <a href="https://wa.me/${formatWhatsAppNumber(companyInfo.whatsappNumber)}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن كارت الخصم والتعاقد مع: ' + item.name)}" 
+            <a href="https://wa.me/${formatWhatsAppNumber(item.whatsapp || companyInfo.whatsappNumber)}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن كارت الخصم والتعاقد مع: ' + item.name)}" 
                target="_blank" 
                class="btn-card-action btn-card-whatsapp">
               <i class="fa-brands fa-whatsapp"></i>
@@ -431,5 +445,10 @@ function setupWhatsAppButton() {
 }
 
 function formatWhatsAppNumber(phone) {
-  return phone.replace(/[^0-9]/g, '');
+  if (!phone) return '201553324646';
+  let clean = phone.toString().replace(/[^0-9]/g, '');
+  if (clean.startsWith('01') && clean.length === 11) {
+    clean = '20' + clean.substring(1);
+  }
+  return clean;
 }

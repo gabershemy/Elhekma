@@ -98,6 +98,19 @@
       <!-- يتم التحميل ديناميكياً -->
     </div>
 
+    <!-- فلتر التخصص الطبي -->
+    <div class="specialty-filter-bar" id="specialtyFilterWrapper">
+      <div class="specialty-select-box">
+        <i class="fa-solid fa-stethoscope specialty-icon"></i>
+        <select id="specialtySelect" class="form-select specialty-dropdown" aria-label="تصفية حسب التخصص الطبي">
+          <option value="all">🩺 كل التخصصات الطبية (عرض الكل)</option>
+        </select>
+        <button id="clearSpecialtyBtn" class="clear-specialty-btn" title="إلغاء فلتر التخصص" style="display: none;">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- عنوان قائمة الأطباء والمراكز -->
     <div class="section-header mt-2" id="providersSection">
       <h2>دليل الأطباء والمستشفيات المعتمدة</h2>

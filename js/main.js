@@ -5,6 +5,7 @@
 
 let allProviders = [];
 let activeCategory = 'all';
+let activeSpecialty = 'all';
 let searchQuery = '';
 let isGoogleSheetConnected = false;
 
@@ -114,6 +115,7 @@ async function fetchLiveGoogleSheetData() {
         updateCategoryCounts();
         renderCategoriesMockup();
         renderFilterTabs();
+        updateSpecialtiesList();
         renderProviders();
 
         if (syncBadge) {
@@ -270,16 +272,68 @@ function getBadgeColor(discount) {
   return 'blue';
 }
 
+// تحديث قائمة التخصصات الطبية ديناميكياً
+function updateSpecialtiesList() {
+  const select = document.getElementById('specialtySelect');
+  if (!select) return;
+
+  // جلب التخصصات المناسبة حسب القسم المختار حالياً
+  const relevantProviders = (activeCategory === 'all')
+    ? allProviders
+    : allProviders.filter(p => p.category === activeCategory);
+
+  const specialtiesSet = new Set();
+  relevantProviders.forEach(p => {
+    if (p.type && p.type.trim() && p.type.trim() !== 'جهة معتمدة' && p.type.trim() !== 'جهة طبية معتمدة') {
+      specialtiesSet.add(p.type.trim());
+    }
+  });
+
+  const sorted = Array.from(specialtiesSet).sort((a, b) => a.localeCompare(b, 'ar'));
+
+  let html = `<option value="all">🩺 كل التخصصات الطبية (${relevantProviders.length} متوفر)</option>`;
+  sorted.forEach(spec => {
+    const count = relevantProviders.filter(p => p.type && (p.type.trim() === spec || p.type.includes(spec))).length;
+    const sel = (activeSpecialty === spec) ? 'selected' : '';
+    html += `<option value="${spec}" ${sel}>${spec} (${count})</option>`;
+  });
+
+  select.innerHTML = html;
+  
+  if (activeSpecialty !== 'all' && !specialtiesSet.has(activeSpecialty)) {
+    activeSpecialty = 'all';
+    select.value = 'all';
+  } else {
+    select.value = activeSpecialty;
+  }
+
+  const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
+  if (clearSpecBtn) {
+    clearSpecBtn.style.display = (activeSpecialty !== 'all') ? 'flex' : 'none';
+  }
+}
+
 // رسم قائمة الجهات والخصومات
 function renderProviders() {
   const container = document.getElementById('providersListContainer');
   const countBadge = document.getElementById('providersCountBadge');
+  const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
   if (!container) return;
+
+  if (clearSpecBtn) {
+    clearSpecBtn.style.display = (activeSpecialty !== 'all') ? 'flex' : 'none';
+  }
 
   let filtered = allProviders.filter(item => {
     const matchCategory = (activeCategory === 'all' || item.category === activeCategory);
     
-    if (!searchQuery) return matchCategory;
+    // فلتر التخصص الطبي
+    const matchSpecialty = (activeSpecialty === 'all') 
+      || (item.type && item.type.trim() === activeSpecialty)
+      || (item.type && item.type.toLowerCase().includes(activeSpecialty.toLowerCase()))
+      || (item.details && item.details.toLowerCase().includes(activeSpecialty.toLowerCase()));
+
+    if (!searchQuery) return matchCategory && matchSpecialty;
 
     const q = searchQuery.toLowerCase().trim();
     const matchName = item.name.toLowerCase().includes(q);
@@ -289,7 +343,7 @@ function renderProviders() {
     const matchDisc = item.discount.toLowerCase().includes(q);
     const matchType = item.type ? item.type.toLowerCase().includes(q) : false;
 
-    return matchCategory && (matchName || matchDetails || matchNotes || matchLoc || matchDisc || matchType);
+    return matchCategory && matchSpecialty && (matchName || matchDetails || matchNotes || matchLoc || matchDisc || matchType);
   });
 
   if (countBadge) {
@@ -370,8 +424,10 @@ function renderProviders() {
 // اختيار القسم
 function selectCategory(catId, scrollToList = false) {
   activeCategory = catId;
+  activeSpecialty = 'all'; // إعادة ضبط التخصص ليتناسب مع القسم الجديد
   renderCategoriesMockup();
   renderFilterTabs();
+  updateSpecialtiesList();
   renderProviders();
 
   if (scrollToList) {
@@ -385,6 +441,7 @@ function selectCategory(catId, scrollToList = false) {
 // إعادة تعيين الفلاتر
 function resetFilters() {
   activeCategory = 'all';
+  activeSpecialty = 'all';
   searchQuery = '';
   const searchInput = document.getElementById('mainSearchInput');
   if (searchInput) searchInput.value = '';
@@ -393,6 +450,7 @@ function resetFilters() {
 
   renderCategoriesMockup();
   renderFilterTabs();
+  updateSpecialtiesList();
   renderProviders();
 }
 
@@ -418,6 +476,24 @@ document.addEventListener('DOMContentLoaded', () => {
       searchInput.value = '';
       searchQuery = '';
       clearBtn.style.display = 'none';
+      renderProviders();
+    });
+  }
+
+  // فلتر التخصص الطبي
+  const specSelect = document.getElementById('specialtySelect');
+  if (specSelect) {
+    specSelect.addEventListener('change', (e) => {
+      activeSpecialty = e.target.value;
+      renderProviders();
+    });
+  }
+
+  const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
+  if (clearSpecBtn) {
+    clearSpecBtn.addEventListener('click', () => {
+      activeSpecialty = 'all';
+      if (specSelect) specSelect.value = 'all';
       renderProviders();
     });
   }

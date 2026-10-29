@@ -42,7 +42,7 @@
         <button id="manualSyncBtn" class="icon-btn" title="تحديث وتنزيل البيانات الحية الآن">
           <i class="fa-solid fa-rotate"></i>
         </button>
-        <button class="icon-btn" title="معلومات التعاقد" onclick="document.getElementById('paperSection').scrollIntoView({behavior: 'smooth'})">
+        <button class="icon-btn" title="نسب الخصم الرسمية للتعاقد" data-bs-toggle="modal" data-bs-target="#contractTermsModal">
           <i class="fa-solid fa-file-contract"></i>
         </button>
       </div>
@@ -93,45 +93,43 @@
       </a>
     </div>
 
-    <!-- 4. أقسام الخدمات الطبية (تصميم الموك آب مع البوردر الأخضر والأيقونات) -->
-    <div class="section-header">
-      <h2>أقسام الشبكة الطبية</h2>
-      <span class="text-muted" style="font-size: 0.82rem;">اضغط على أي قسم للتصفح</span>
-    </div>
-
-    <div class="categories-wrapper" id="mockupCategoriesContainer">
-      <!-- يتم تحميل البطاقات ديناميكياً بنفس شكل الموك آب عبر JavaScript -->
-    </div>
-
-    <!-- 5. تفاصيل بنود التعاقد الأساسية (المأخوذة من الورقة الرسمية) -->
-    <section class="paper-box" id="paperSection">
-      <div class="paper-box-header">
-        <div class="paper-box-title">
-          <i class="fa-solid fa-file-signature text-success"></i>
-          <span>الخدمات ونسب الخصم الرسمية (طبقاً للتعاقد)</span>
-        </div>
-        <span class="badge bg-success" style="font-size: 0.78rem;">معتمد</span>
-      </div>
-      <div class="paper-grid" id="paperSummaryGrid">
-        <!-- يتم التحميل ديناميكياً من بيانات الورقة -->
-      </div>
-    </section>
-
-    <!-- 6. أزرار الفلترة السريعة وقائمة الأطباء والمراكز -->
-    <div class="section-header" id="providersSection">
-      <h2>المراكز والأطباء المعتمدين</h2>
-      <span class="badge-counter" id="providersCountBadge">جاري التحميل...</span>
-    </div>
-
-    <!-- تابات الفلترة الأفقية -->
-    <div class="filter-tabs-scroll" id="filterTabsContainer">
+    <!-- أزرار الفلترة السريعة بالأقسام الطبية -->
+    <div class="filter-tabs-scroll mt-2" id="filterTabsContainer">
       <!-- يتم التحميل ديناميكياً -->
+    </div>
+
+    <!-- عنوان قائمة الأطباء والمراكز -->
+    <div class="section-header mt-2" id="providersSection">
+      <h2>دليل الأطباء والمستشفيات المعتمدة</h2>
+      <span class="badge-counter" id="providersCountBadge">جاري التحميل...</span>
     </div>
 
     <!-- بطاقات الجهات والأطباء والمستشفيات -->
     <div class="providers-grid" id="providersListContainer">
       <!-- يتم عرض كروت الأطباء والمراكز هنا -->
     </div>
+
+  </div> <!-- نهاية app-container -->
+
+  <!-- نافذة منبثقة لبنود ونسب التعاقد الرسمية (تفتح عند الضغط على أيقونة العقد) -->
+  <div class="modal fade" id="contractTermsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fa-solid fa-file-signature text-success me-2"></i>
+            بنود ونسب الخصم الرسمية للتعاقد
+          </h5>
+          <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="paper-grid" id="paperSummaryGrid">
+            <!-- يتم التحميل ديناميكياً -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   </div> <!-- نهاية app-container -->
 

@@ -517,35 +517,45 @@ function getProviderSpecialtyInfo(item) {
 
 // تحديث قائمة وأزرار التخصصات الطبية ديناميكياً
 function updateSpecialtiesList() {
+  const wrapper = document.getElementById('specialtyFilterWrapper');
   const chipsContainer = document.getElementById('specialtyChipsContainer');
   const select = document.getElementById('specialtySelect');
   const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
 
-  // جلب الجهات التابعة للقسم الحالي
-  const relevantProviders = (activeCategory === 'all')
-    ? allProviders
-    : allProviders.filter(p => p.category === activeCategory);
+  // إذا كان المستخدم يختار قسماً ليس له علاقة بالأطباء (صيدليات، معامل، مستشفيات...)، نخفي فلتر التخصصات الطبية
+  const isDoctorCategory = (activeCategory === 'all' || activeCategory === 'doctors');
+  if (!isDoctorCategory) {
+    if (wrapper) wrapper.style.display = 'none';
+    return;
+  }
+  if (wrapper) wrapper.style.display = 'block';
 
-  // احتساب عدد الأطباء / الجهات لكل تخصص
+  // التخصصات تكون مخصصة فقط للأطباء والعيادات الطبية وليس المستشفيات أو المعامل
+  const doctorProviders = allProviders.filter(p => p.category === 'doctors' || !p.category);
+
+  // احتساب عدد الأطباء لكل تخصص طبي
   const specialtyCounts = {};
   const presentSpecialties = new Map();
 
-  relevantProviders.forEach(p => {
+  doctorProviders.forEach(p => {
     const spec = getProviderSpecialtyInfo(p);
-    specialtyCounts[spec.key] = (specialtyCounts[spec.key] || 0) + 1;
-    if (!presentSpecialties.has(spec.key)) {
-      presentSpecialties.set(spec.key, spec);
+    // استبعاد أي قسم غير طبي للأطباء
+    if (spec && spec.key !== 'hospitals' && spec.key !== 'labs' && spec.key !== 'pharmacies' && spec.key !== 'radiology') {
+      specialtyCounts[spec.key] = (specialtyCounts[spec.key] || 0) + 1;
+      if (!presentSpecialties.has(spec.key)) {
+        presentSpecialties.set(spec.key, spec);
+      }
     }
   });
 
-  // 1. رسم أزرار التخصصات الأفقية (Chips)
+  // 1. رسم أزرار التخصصات الأفقية (Chips) لتخصصات الأطباء فقط
   if (chipsContainer) {
     let chipsHtml = `
       <button class="specialty-chip ${activeSpecialty === 'all' ? 'active' : ''}" 
               onclick="selectSpecialty('all')">
-        <i class="fa-solid fa-border-all"></i>
-        <span>كل التخصصات</span>
-        <span class="chip-count">${relevantProviders.length}</span>
+        <i class="fa-solid fa-user-doctor"></i>
+        <span>كل تخصصات الأطباء</span>
+        <span class="chip-count">${doctorProviders.length}</span>
       </button>
     `;
 
@@ -567,7 +577,7 @@ function updateSpecialtiesList() {
 
   // 2. تحديث القائمة المنسدلة (Dropdown)
   if (select) {
-    let selectHtml = `<option value="all">🩺 كل التخصصات الطبية (${relevantProviders.length} متوفر)</option>`;
+    let selectHtml = `<option value="all">🩺 كل التخصصات الطبية (${doctorProviders.length} طبيب متوفر)</option>`;
     presentSpecialties.forEach((spec, key) => {
       const count = specialtyCounts[key] || 0;
       const sel = (activeSpecialty === key) ? 'selected' : '';

@@ -276,7 +276,7 @@ function getBadgeColor(discount) {
 const MEDICAL_SPECIALTIES = [
   {
     key: "internal",
-    title: "أمراض الباطنة العامة والجهاز الهضمي",
+    title: "أمراض الباطنة العامة والجهاز الهضمي والكبد",
     shortTitle: "باطنة",
     icon: "fa-solid fa-stethoscope",
     color: "#0d9488",
@@ -285,39 +285,57 @@ const MEDICAL_SPECIALTIES = [
   },
   {
     key: "cardio",
-    title: "أمراض القلب والأوعية الدموية",
-    shortTitle: "قلب وأوعية",
+    title: "أمراض القلب والأوعية الدموية والقسطرة",
+    shortTitle: "قلب",
     icon: "fa-solid fa-heart-pulse",
     color: "#e11d48",
     bg: "#fff1f2",
-    keywords: ["قلب", "اوعية", "أوعية", "قسطرة", "رسم قلب"]
+    keywords: ["قلب", "قسطرة", "رسم قلب", "ايكو"]
+  },
+  {
+    key: "vascular",
+    title: "جراحة الأوعية الدموية والقدم السكري والدوالي",
+    shortTitle: "أوعية دموية",
+    icon: "fa-solid fa-heart-circle-bolt",
+    color: "#dc2626",
+    bg: "#fef2f2",
+    keywords: ["اوعيه", "أوعية", "اوعية", "أوعيه", "دوالي", "قدم سكري"]
   },
   {
     key: "chest",
-    title: "الأمراض الصدرية والجهاز التنفسي والحساسية",
-    shortTitle: "صدرية وتنافسي",
+    title: "الأمراض الصدرية والحساسية والجهاز التنفسي",
+    shortTitle: "صدرية",
     icon: "fa-solid fa-lungs",
     color: "#0284c7",
     bg: "#f0f9ff",
     keywords: ["صدر", "تنفسي", "حساسية الصدر", "رئوي"]
   },
   {
-    key: "eyes",
-    title: "طب وجراحة العيون والرمد",
-    shortTitle: "عيون ورمد",
-    icon: "fa-solid fa-eye",
-    color: "#2563eb",
-    bg: "#eff6ff",
-    keywords: ["رمد", "عيون", "عين", "ليزك", "شبكية", "مياه بيضاء"]
+    key: "obgyn",
+    title: "أمراض النساء والتوليد وعلاج العقم والحقن المجهري",
+    shortTitle: "نساء وتوليد",
+    icon: "fa-solid fa-person-pregnant",
+    color: "#be185d",
+    bg: "#fdf2f8",
+    keywords: ["نسا", "نساء", "توليد", "حمل", "سونار نسا"]
   },
   {
-    key: "derma",
-    title: "أمراض الجلدية والتناسلية والتجميل والليزر",
-    shortTitle: "جلدية وتجميل",
-    icon: "fa-solid fa-wand-magic-sparkles",
-    color: "#d97706",
-    bg: "#fffbeb",
-    keywords: ["جلد", "جلدية", "جلديه", "تجميل", "ليزر"]
+    key: "pedia",
+    title: "طب الأطفال وحديثي الولادة والمبتسرين",
+    shortTitle: "أطفال",
+    icon: "fa-solid fa-baby",
+    color: "#db2777",
+    bg: "#fdf2f8",
+    keywords: ["اطفال", "أطفال", "رضع", "مبتسرين", "نمو"]
+  },
+  {
+    key: "ortho",
+    title: "جراحة العظام والمفاصل والعمود الفقري والكسور",
+    shortTitle: "عظام",
+    icon: "fa-solid fa-bone",
+    color: "#ea580c",
+    bg: "#fff7ed",
+    keywords: ["عظام", "مفاصل", "كسور", "عمود فقري", "غضروف"]
   },
   {
     key: "uro",
@@ -329,13 +347,13 @@ const MEDICAL_SPECIALTIES = [
     keywords: ["مسالك", "بولية", "كلى", "تناسلية", "تناسليه", "عقم", "بروستاتا"]
   },
   {
-    key: "endo",
-    title: "أمراض الغدد الصماء وعلاج السكر ومقاومة الأنسولين",
-    shortTitle: "غدد وسكر",
-    icon: "fa-solid fa-dna",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    keywords: ["غدد", "سكر", "غدة", "أنسولين"]
+    key: "eyes",
+    title: "طب وجراحة العيون والرمد والليزك",
+    shortTitle: "رمد وعيون",
+    icon: "fa-solid fa-eye",
+    color: "#2563eb",
+    bg: "#eff6ff",
+    keywords: ["رمد", "عيون", "عين", "ليزك", "شبكية", "مياه بيضاء"]
   },
   {
     key: "ent",
@@ -347,31 +365,58 @@ const MEDICAL_SPECIALTIES = [
     keywords: ["انف", "أنف", "اذن", "أذن", "حنجر", "حنجرة", "سمع"]
   },
   {
+    key: "derma",
+    title: "أمراض الجلدية والتناسلية والتجميل والليزر",
+    shortTitle: "جلدية وتجميل",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    color: "#d97706",
+    bg: "#fffbeb",
+    keywords: ["جلد", "جلدية", "جلديه", "تجميل", "ليزر"]
+  },
+  {
+    key: "endo",
+    title: "أمراض الغدد الصماء وعلاج السكر ومقاومة الأنسولين",
+    shortTitle: "غدد وسكر",
+    icon: "fa-solid fa-dna",
+    color: "#7c3aed",
+    bg: "#f5f3ff",
+    keywords: ["غدد", "سكر", "غدة", "أنسولين", "سكر وغدد"]
+  },
+  {
+    key: "surgery",
+    title: "الجراحة العامة وجراحة الأورام والمناظير",
+    shortTitle: "جراحة عامة",
+    icon: "fa-solid fa-syringe",
+    color: "#b91c1c",
+    bg: "#fef2f2",
+    keywords: ["جراح", "جراحة", "مناظير", "اورام", "أورام"]
+  },
+  {
     key: "neuro",
-    title: "طب المخ والأعصاب والطب النفسي وعلاج الإدمان",
-    shortTitle: "مخ وأعصاب ونفسية",
+    title: "طب وجراحة المخ والأعصاب",
+    shortTitle: "مخ وأعصاب",
     icon: "fa-solid fa-brain",
+    color: "#7e22ce",
+    bg: "#faf5ff",
+    keywords: ["مخ", "اعصاب", "أعصاب", "جلطات", "صرع"]
+  },
+  {
+    key: "psych",
+    title: "الطب النفسي وعلاج الإدمان والصحة النفسية",
+    shortTitle: "طب نفسي",
+    icon: "fa-solid fa-head-side-virus",
     color: "#9333ea",
     bg: "#faf5ff",
-    keywords: ["مخ", "اعصاب", "أعصاب", "نفسي", "نفسية", "نفسيه", "إدمان", "ادمان"]
+    keywords: ["نفسي", "نفسية", "نفسيه", "إدمان", "ادمان"]
   },
   {
-    key: "ortho",
-    title: "جراحة العظام والمفاصل والعمود الفقري",
-    shortTitle: "عظام ومفاصل",
-    icon: "fa-solid fa-bone",
-    color: "#ea580c",
-    bg: "#fff7ed",
-    keywords: ["عظام", "مفاصل", "كسور", "عمود فقري", "غضروف"]
-  },
-  {
-    key: "pedia",
-    title: "طب الأطفال وحديثي الولادة والمبتسرين",
-    shortTitle: "أطفال ورضع",
-    icon: "fa-solid fa-baby",
-    color: "#db2777",
-    bg: "#fdf2f8",
-    keywords: ["اطفال", "أطفال", "رضع", "مبتسرين", "نمو"]
+    key: "rheum",
+    title: "أمراض الروماتيزم والمناعة والمفاصل",
+    shortTitle: "روماتيزم ومناعة",
+    icon: "fa-solid fa-shield-virus",
+    color: "#9f1239",
+    bg: "#fff1f2",
+    keywords: ["روماتيزم", "مناعة", "روماتويد"]
   },
   {
     key: "dental",
@@ -385,7 +430,7 @@ const MEDICAL_SPECIALTIES = [
   {
     key: "physio",
     title: "العلاج الطبيعي والتأهيل الحركي وإصابات الملاعب",
-    shortTitle: "علاج طبيعي وتأهيل",
+    shortTitle: "علاج طبيعي",
     icon: "fa-solid fa-person-walking",
     color: "#16a34a",
     bg: "#f0fdf4",

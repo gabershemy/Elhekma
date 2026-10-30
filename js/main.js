@@ -272,48 +272,262 @@ function getBadgeColor(discount) {
   return 'blue';
 }
 
-// تحديث قائمة التخصصات الطبية ديناميكياً
-function updateSpecialtiesList() {
-  const select = document.getElementById('specialtySelect');
-  if (!select) return;
+// دليل التخصصات الطبية الشامل مع الأيقونات والألوان والكلمات الدلالية
+const MEDICAL_SPECIALTIES = [
+  {
+    key: "internal",
+    title: "أمراض الباطنة العامة والجهاز الهضمي",
+    shortTitle: "باطنة",
+    icon: "fa-solid fa-stethoscope",
+    color: "#0d9488",
+    bg: "#ecfdf5",
+    keywords: ["باطن", "باطنة", "باطنه", "جهاز هضمي", "كبد"]
+  },
+  {
+    key: "cardio",
+    title: "أمراض القلب والأوعية الدموية",
+    shortTitle: "قلب وأوعية",
+    icon: "fa-solid fa-heart-pulse",
+    color: "#e11d48",
+    bg: "#fff1f2",
+    keywords: ["قلب", "اوعية", "أوعية", "قسطرة", "رسم قلب"]
+  },
+  {
+    key: "chest",
+    title: "الأمراض الصدرية والجهاز التنفسي والحساسية",
+    shortTitle: "صدرية وتنافسي",
+    icon: "fa-solid fa-lungs",
+    color: "#0284c7",
+    bg: "#f0f9ff",
+    keywords: ["صدر", "تنفسي", "حساسية الصدر", "رئوي"]
+  },
+  {
+    key: "eyes",
+    title: "طب وجراحة العيون والرمد",
+    shortTitle: "عيون ورمد",
+    icon: "fa-solid fa-eye",
+    color: "#2563eb",
+    bg: "#eff6ff",
+    keywords: ["رمد", "عيون", "عين", "ليزك", "شبكية", "مياه بيضاء"]
+  },
+  {
+    key: "derma",
+    title: "أمراض الجلدية والتناسلية والتجميل والليزر",
+    shortTitle: "جلدية وتجميل",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    color: "#d97706",
+    bg: "#fffbeb",
+    keywords: ["جلد", "جلدية", "جلديه", "تجميل", "ليزر"]
+  },
+  {
+    key: "uro",
+    title: "جراحة الكلى والمسالك البولية والتناسلية والعقم",
+    shortTitle: "مسالك بولية",
+    icon: "fa-solid fa-droplet",
+    color: "#0891b2",
+    bg: "#ecfeff",
+    keywords: ["مسالك", "بولية", "كلى", "تناسلية", "تناسليه", "عقم", "بروستاتا"]
+  },
+  {
+    key: "endo",
+    title: "أمراض الغدد الصماء وعلاج السكر ومقاومة الأنسولين",
+    shortTitle: "غدد وسكر",
+    icon: "fa-solid fa-dna",
+    color: "#7c3aed",
+    bg: "#f5f3ff",
+    keywords: ["غدد", "سكر", "غدة", "أنسولين"]
+  },
+  {
+    key: "ent",
+    title: "طب وجراحة الأنف والأذن والحنجرة",
+    shortTitle: "أنف وأذن",
+    icon: "fa-solid fa-head-side-cough",
+    color: "#4f46e5",
+    bg: "#eef2ff",
+    keywords: ["انف", "أنف", "اذن", "أذن", "حنجر", "حنجرة", "سمع"]
+  },
+  {
+    key: "neuro",
+    title: "طب المخ والأعصاب والطب النفسي وعلاج الإدمان",
+    shortTitle: "مخ وأعصاب ونفسية",
+    icon: "fa-solid fa-brain",
+    color: "#9333ea",
+    bg: "#faf5ff",
+    keywords: ["مخ", "اعصاب", "أعصاب", "نفسي", "نفسية", "نفسيه", "إدمان", "ادمان"]
+  },
+  {
+    key: "ortho",
+    title: "جراحة العظام والمفاصل والعمود الفقري",
+    shortTitle: "عظام ومفاصل",
+    icon: "fa-solid fa-bone",
+    color: "#ea580c",
+    bg: "#fff7ed",
+    keywords: ["عظام", "مفاصل", "كسور", "عمود فقري", "غضروف"]
+  },
+  {
+    key: "pedia",
+    title: "طب الأطفال وحديثي الولادة والمبتسرين",
+    shortTitle: "أطفال ورضع",
+    icon: "fa-solid fa-baby",
+    color: "#db2777",
+    bg: "#fdf2f8",
+    keywords: ["اطفال", "أطفال", "رضع", "مبتسرين", "نمو"]
+  },
+  {
+    key: "dental",
+    title: "طب وجراحة وتجميل وتركيبات الأسنان",
+    shortTitle: "طب الأسنان",
+    icon: "fa-solid fa-tooth",
+    color: "#059669",
+    bg: "#ecfdf5",
+    keywords: ["اسنان", "أسنان", "تركيبات", "تقويم", "زراعة أسنان"]
+  },
+  {
+    key: "physio",
+    title: "العلاج الطبيعي والتأهيل الحركي وإصابات الملاعب",
+    shortTitle: "علاج طبيعي وتأهيل",
+    icon: "fa-solid fa-person-walking",
+    color: "#16a34a",
+    bg: "#f0fdf4",
+    keywords: ["علاج طبيعي", "تأهيل", "جلسات", "حركي"]
+  },
+  {
+    key: "general_doc",
+    title: "عيادات واستشارات تخصصية ونخبة الأطباء",
+    shortTitle: "استشارات تخصصية",
+    icon: "fa-solid fa-user-doctor",
+    color: "#0f766e",
+    bg: "#f0fdfa",
+    keywords: ["استشارات", "تخصصية", "أطباء واستشاريين", "عيادة", "عام"]
+  }
+];
 
-  // جلب التخصصات المناسبة حسب القسم المختار حالياً
+// تحديد التخصص الطبي الأنسب لأي جهة أو طبيب
+function getProviderSpecialtyInfo(item) {
+  // إذا كانت الجهة ليست في قسم الأطباء (مستشفيات، معامل، صيدليات...)
+  if (item.category && item.category !== 'doctors') {
+    const cat = medicalCategories.find(c => c.id === item.category);
+    return {
+      key: item.category,
+      title: cat ? cat.title : (item.type || 'خدمات طبية معتمدة'),
+      shortTitle: cat ? cat.title : (item.type || 'خدمات طبية'),
+      icon: cat ? cat.icon : 'fa-solid fa-hospital',
+      color: '#0d9488',
+      bg: '#ecfdf5',
+      hint: cat ? cat.desc : 'مراكز وجهات طبية معتمدة لحاملي بطاقة الحكمة'
+    };
+  }
+
+  // دمج النصوص للبحث بالكلمات الدلالية
+  const text = `${item.type || ''} ${item.name || ''} ${item.details || ''}`.toLowerCase();
+
+  for (const spec of MEDICAL_SPECIALTIES) {
+    if (spec.key === 'general_doc') continue;
+    for (const kw of spec.keywords) {
+      if (text.includes(kw)) {
+        return spec;
+      }
+    }
+  }
+
+  // إذا وجد تخصص مخصص في الشيت لم يشمله الفهرس
+  if (item.type && item.type.trim() && !item.type.includes('جهة معتمدة') && !item.type.includes('استشارات تخصصية')) {
+    return {
+      key: item.type.trim(),
+      title: item.type.trim(),
+      shortTitle: item.type.trim(),
+      icon: 'fa-solid fa-user-doctor',
+      color: '#0f766e',
+      bg: '#f0fdfa',
+      hint: 'عيادات واستشارات طبية معتمدة بخصومات حصرية'
+    };
+  }
+
+  return MEDICAL_SPECIALTIES.find(s => s.key === 'general_doc');
+}
+
+// تحديث قائمة وأزرار التخصصات الطبية ديناميكياً
+function updateSpecialtiesList() {
+  const chipsContainer = document.getElementById('specialtyChipsContainer');
+  const select = document.getElementById('specialtySelect');
+  const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
+
+  // جلب الجهات التابعة للقسم الحالي
   const relevantProviders = (activeCategory === 'all')
     ? allProviders
     : allProviders.filter(p => p.category === activeCategory);
 
-  const specialtiesSet = new Set();
+  // احتساب عدد الأطباء / الجهات لكل تخصص
+  const specialtyCounts = {};
+  const presentSpecialties = new Map();
+
   relevantProviders.forEach(p => {
-    if (p.type && p.type.trim() && p.type.trim() !== 'جهة معتمدة' && p.type.trim() !== 'جهة طبية معتمدة') {
-      specialtiesSet.add(p.type.trim());
+    const spec = getProviderSpecialtyInfo(p);
+    specialtyCounts[spec.key] = (specialtyCounts[spec.key] || 0) + 1;
+    if (!presentSpecialties.has(spec.key)) {
+      presentSpecialties.set(spec.key, spec);
     }
   });
 
-  const sorted = Array.from(specialtiesSet).sort((a, b) => a.localeCompare(b, 'ar'));
+  // 1. رسم أزرار التخصصات الأفقية (Chips)
+  if (chipsContainer) {
+    let chipsHtml = `
+      <button class="specialty-chip ${activeSpecialty === 'all' ? 'active' : ''}" 
+              onclick="selectSpecialty('all')">
+        <i class="fa-solid fa-border-all"></i>
+        <span>كل التخصصات</span>
+        <span class="chip-count">${relevantProviders.length}</span>
+      </button>
+    `;
 
-  let html = `<option value="all">🩺 كل التخصصات الطبية (${relevantProviders.length} متوفر)</option>`;
-  sorted.forEach(spec => {
-    const count = relevantProviders.filter(p => p.type && (p.type.trim() === spec || p.type.includes(spec))).length;
-    const sel = (activeSpecialty === spec) ? 'selected' : '';
-    html += `<option value="${spec}" ${sel}>${spec} (${count})</option>`;
-  });
+    presentSpecialties.forEach((spec, key) => {
+      const count = specialtyCounts[key] || 0;
+      chipsHtml += `
+        <button class="specialty-chip ${activeSpecialty === key ? 'active' : ''}" 
+                onclick="selectSpecialty('${key}')"
+                style="${activeSpecialty === key ? `background: ${spec.color}; border-color: ${spec.color};` : ''}">
+          <i class="${spec.icon}" style="${activeSpecialty !== key ? `color: ${spec.color};` : ''}"></i>
+          <span>${spec.shortTitle || spec.title}</span>
+          <span class="chip-count">${count}</span>
+        </button>
+      `;
+    });
 
-  select.innerHTML = html;
-  
-  if (activeSpecialty !== 'all' && !specialtiesSet.has(activeSpecialty)) {
-    activeSpecialty = 'all';
-    select.value = 'all';
-  } else {
+    chipsContainer.innerHTML = chipsHtml;
+  }
+
+  // 2. تحديث القائمة المنسدلة (Dropdown)
+  if (select) {
+    let selectHtml = `<option value="all">🩺 كل التخصصات الطبية (${relevantProviders.length} متوفر)</option>`;
+    presentSpecialties.forEach((spec, key) => {
+      const count = specialtyCounts[key] || 0;
+      const sel = (activeSpecialty === key) ? 'selected' : '';
+      selectHtml += `<option value="${key}" ${sel}>${spec.title} (${count})</option>`;
+    });
+
+    select.innerHTML = selectHtml;
     select.value = activeSpecialty;
   }
 
-  const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
   if (clearSpecBtn) {
     clearSpecBtn.style.display = (activeSpecialty !== 'all') ? 'flex' : 'none';
   }
 }
 
-// رسم قائمة الجهات والخصومات
+// دالة اختيار تخصص معين
+function selectSpecialty(specKey) {
+  activeSpecialty = specKey;
+  updateSpecialtiesList();
+  renderProviders();
+
+  // تمرير الشاشة بلطف لقائمة الأطباء
+  const target = document.getElementById('providersSection');
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// رسم قائمة الأطباء والمراكز مقسمة تحت كل تخصص بالأيقونة المميزة
 function renderProviders() {
   const container = document.getElementById('providersListContainer');
   const countBadge = document.getElementById('providersCountBadge');
@@ -324,14 +538,11 @@ function renderProviders() {
     clearSpecBtn.style.display = (activeSpecialty !== 'all') ? 'flex' : 'none';
   }
 
+  // تصفية العناصر حسب القسم، التخصص، والبحث
   let filtered = allProviders.filter(item => {
     const matchCategory = (activeCategory === 'all' || item.category === activeCategory);
-    
-    // فلتر التخصص الطبي
-    const matchSpecialty = (activeSpecialty === 'all') 
-      || (item.type && item.type.trim() === activeSpecialty)
-      || (item.type && item.type.toLowerCase().includes(activeSpecialty.toLowerCase()))
-      || (item.details && item.details.toLowerCase().includes(activeSpecialty.toLowerCase()));
+    const spec = getProviderSpecialtyInfo(item);
+    const matchSpecialty = (activeSpecialty === 'all' || spec.key === activeSpecialty);
 
     if (!searchQuery) return matchCategory && matchSpecialty;
 
@@ -342,8 +553,9 @@ function renderProviders() {
     const matchLoc = item.location ? item.location.toLowerCase().includes(q) : false;
     const matchDisc = item.discount.toLowerCase().includes(q);
     const matchType = item.type ? item.type.toLowerCase().includes(q) : false;
+    const matchSpecTitle = spec.title.toLowerCase().includes(q);
 
-    return matchCategory && matchSpecialty && (matchName || matchDetails || matchNotes || matchLoc || matchDisc || matchType);
+    return matchCategory && matchSpecialty && (matchName || matchDetails || matchNotes || matchLoc || matchDisc || matchType || matchSpecTitle);
   });
 
   if (countBadge) {
@@ -352,74 +564,131 @@ function renderProviders() {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-magnifying-glass"></i>
+      <div class="empty-state" style="padding: 40px 20px;">
+        <i class="fa-solid fa-magnifying-glass fa-2x mb-2 text-muted"></i>
         <h4 style="font-weight: 800; margin-bottom: 6px;">لا توجد نتائج مطابقة</h4>
-        <p>جرب البحث بكلمات أخرى أو تغيير القسم المحدد</p>
-        <button class="btn btn-outline-success mt-2" onclick="resetFilters()">عرض جميع الجهات</button>
+        <p>جرب البحث بكلمة أخرى أو اختيار تخصص آخر</p>
+        <button class="btn btn-outline-success mt-2" onclick="resetFilters()">عرض جميع الأطباء والتخصصات</button>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
-    const catObj = medicalCategories.find(c => c.id === item.category) || {};
-    const isHighDiscount = item.discount.includes('30%') || item.discount.includes('25%');
+  // تجميع الأطباء / الجهات حسب التخصص
+  const groupsMap = new Map();
+  filtered.forEach(item => {
+    const spec = getProviderSpecialtyInfo(item);
+    if (!groupsMap.has(spec.key)) {
+      groupsMap.set(spec.key, {
+        spec: spec,
+        items: []
+      });
+    }
+    groupsMap.get(spec.key).items.push(item);
+  });
 
-    return `
-      <div class="provider-card">
-        <div>
-          <div class="provider-card-top">
-            <div class="provider-info">
-              <span class="provider-category-tag">
-                <i class="${catObj.icon || 'fa-solid fa-stethoscope'} text-success"></i>
-                ${catObj.title || 'جهة طبية'}
-              </span>
-              <h3>${item.name}</h3>
-              <div style="font-size: 0.8rem; font-weight: 600; color: #0284c7;">
-                ${item.type || ''}
-              </div>
-            </div>
-            <div class="discount-ribbon ${isHighDiscount ? 'high' : ''}">
-              <i class="fa-solid fa-percent"></i>
-              <span>خصم ${item.discount}</span>
-            </div>
+  // بناء الكود مع العنوان والأيقونة الجميلة لكل تخصص
+  let outputHtml = '';
+
+  groupsMap.forEach((group) => {
+    const spec = group.spec;
+    const itemsCount = group.items.length;
+    const countText = itemsCount === 1 ? 'طبيب / جهة واحدة' : `${itemsCount} أطباء / جهات معتمدة`;
+
+    outputHtml += `
+      <section class="specialty-block" id="spec-group-${spec.key}">
+        
+        <!-- عنوان ورأس التخصص مع الأيقونة الجميلة -->
+        <div class="specialty-section-header" style="border-right-color: ${spec.color};">
+          <div class="specialty-icon-circle" style="background: ${spec.bg}; color: ${spec.color}; border: 1.5px solid ${spec.color}40;">
+            <i class="${spec.icon}"></i>
           </div>
-
-          <div class="provider-body">
-            <p style="margin-bottom: 6px;">${item.details}</p>
-            ${item.notes ? `
-              <div class="provider-note">
-                <i class="fa-solid fa-circle-check text-success"></i>
-                <span>${item.notes}</span>
-              </div>
-            ` : ''}
+          <div class="specialty-header-content">
+            <div class="specialty-title-row">
+              <h3 class="specialty-title-text" style="color: ${spec.color};">
+                ${spec.title}
+              </h3>
+              <span class="specialty-count-badge" style="background: ${spec.color}15; color: ${spec.color}; border: 1px solid ${spec.color}35;">
+                <i class="fa-solid fa-user-doctor me-1"></i> ${countText}
+              </span>
+            </div>
+            <div class="specialty-hint">
+              ${spec.hint || 'نخبة الأطباء والاستشاريين المعتمدين لحاملي بطاقة الحكمة'}
+            </div>
           </div>
         </div>
 
-        <div>
-          <div class="provider-meta">
-            <span><i class="fa-solid fa-location-dot me-1 text-danger"></i> ${item.location || 'دمنهور / البحيرة'}</span>
-            ${item.phone ? `<span><i class="fa-solid fa-phone me-1 text-primary"></i> ${item.phone}</span>` : '<span><i class="fa-solid fa-shield-halved me-1 text-success"></i> تعاقد معتمد</span>'}
-          </div>
+        <!-- شبكة كروت الأطباء التابعين لهذا التخصص -->
+        <div class="providers-grid">
+          ${group.items.map(item => renderProviderCardHtml(item, spec)).join('')}
+        </div>
 
-          <div class="provider-actions">
-            <a href="tel:${item.phone || companyInfo.phone}" class="btn-card-action btn-card-call" title="حجز أو اتصال">
-              <i class="fa-solid fa-phone"></i>
-              <span>اتصال للحجز</span>
-            </a>
-            <a href="https://wa.me/${formatWhatsAppNumber(item.whatsapp || companyInfo.whatsappNumber)}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن كارت الخصم والتعاقد مع: ' + item.name)}" 
-               target="_blank" 
-               class="btn-card-action btn-card-whatsapp">
-              <i class="fa-brands fa-whatsapp"></i>
-              <span>استفسار واتساب</span>
-            </a>
+      </section>
+    `;
+  });
+
+  container.innerHTML = outputHtml;
+}
+
+// دالة بناء كارت الطبيب أو المركز الفردي
+function renderProviderCardHtml(item, spec) {
+  const catObj = medicalCategories.find(c => c.id === item.category) || {};
+  const isHighDiscount = item.discount.includes('30%') || item.discount.includes('25%');
+
+  return `
+    <div class="provider-card">
+      <div>
+        <div class="provider-card-top">
+          <div class="provider-info">
+            <span class="provider-category-tag" style="color: ${spec.color};">
+              <i class="${spec.icon}"></i>
+              ${spec.shortTitle || catObj.title || 'طبيب معتمد'}
+            </span>
+            <h3>${item.name}</h3>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #0284c7;">
+              ${item.type || spec.title}
+            </div>
           </div>
+          <div class="discount-ribbon ${isHighDiscount ? 'high' : ''}">
+            <i class="fa-solid fa-percent"></i>
+            <span>خصم ${item.discount}</span>
+          </div>
+        </div>
+
+        <div class="provider-body">
+          <p style="margin-bottom: 6px;">${item.details}</p>
+          ${item.notes ? `
+            <div class="provider-note">
+              <i class="fa-solid fa-clock text-success"></i>
+              <span>${item.notes}</span>
+            </div>
+          ` : ''}
         </div>
       </div>
-    `;
-  }).join('');
+
+      <div>
+        <div class="provider-meta">
+          <span><i class="fa-solid fa-location-dot me-1 text-danger"></i> ${item.location || 'دمنهور / البحيرة'}</span>
+          ${item.phone ? `<span><i class="fa-solid fa-phone me-1 text-primary"></i> ${item.phone}</span>` : '<span><i class="fa-solid fa-shield-halved me-1 text-success"></i> تعاقد معتمد</span>'}
+        </div>
+
+        <div class="provider-actions">
+          <a href="tel:${item.phone || companyInfo.phone}" class="btn-card-action btn-card-call" title="حجز أو اتصال">
+            <i class="fa-solid fa-phone"></i>
+            <span>اتصال للحجز</span>
+          </a>
+          <a href="https://wa.me/${formatWhatsAppNumber(item.whatsapp || companyInfo.whatsappNumber)}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن كارت الخصم والتعاقد مع: ' + item.name)}" 
+             target="_blank" 
+             class="btn-card-action btn-card-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>استفسار واتساب</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
 }
+
 
 // اختيار القسم
 function selectCategory(catId, scrollToList = false) {
@@ -480,21 +749,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // فلتر التخصص الطبي
+  // فلتر التخصص الطبي (القائمة المنسدلة)
   const specSelect = document.getElementById('specialtySelect');
   if (specSelect) {
     specSelect.addEventListener('change', (e) => {
-      activeSpecialty = e.target.value;
-      renderProviders();
+      selectSpecialty(e.target.value);
     });
   }
 
   const clearSpecBtn = document.getElementById('clearSpecialtyBtn');
   if (clearSpecBtn) {
     clearSpecBtn.addEventListener('click', () => {
-      activeSpecialty = 'all';
-      if (specSelect) specSelect.value = 'all';
-      renderProviders();
+      selectSpecialty('all');
     });
   }
 

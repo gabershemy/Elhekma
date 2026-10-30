@@ -773,10 +773,76 @@ body {
 }
 
 /* ========================================================
-   Specialty Filter Dropdown
+   Specialty Filter Dropdown & Chips Bar
    ======================================================== */
 .specialty-filter-bar {
   padding: 0 20px 10px;
+}
+
+.specialty-chips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 10px;
+}
+
+.specialty-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.specialty-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-family: inherit;
+}
+
+.specialty-chip i {
+  font-size: 0.95rem;
+  color: var(--primary);
+  transition: var(--transition);
+}
+
+.specialty-chip:hover {
+  border-color: var(--primary);
+  background: #f0fdfa;
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.specialty-chip.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-color: var(--primary-dark);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(10, 143, 109, 0.28);
+}
+
+.specialty-chip.active i {
+  color: var(--white);
+}
+
+.specialty-chip .chip-count {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+}
+
+.specialty-chip.active .chip-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--white);
 }
 
 .specialty-select-box {
@@ -843,6 +909,77 @@ body {
   background: #fee2e2;
   color: #dc2626;
 }
+
+/* ========================================================
+   Specialty Block & Section Header (أقسام التخصصات المنفصلة)
+   ======================================================== */
+.specialty-block {
+  margin-bottom: 26px;
+  animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.specialty-section-header {
+  margin: 0 20px 14px;
+  background: var(--white);
+  border: 1.5px solid #e2e8f0;
+  border-right: 5px solid var(--primary);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.specialty-icon-circle {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: var(--transition);
+}
+
+.specialty-header-content {
+  flex-grow: 1;
+}
+
+.specialty-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.specialty-title-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.specialty-count-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.specialty-hint {
+  font-size: 0.8rem;
+  color: var(--gray-text);
+  margin-top: 3px;
+}
+
 
 
 

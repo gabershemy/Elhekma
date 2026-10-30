@@ -98,9 +98,14 @@
       <!-- يتم التحميل ديناميكياً -->
     </div>
 
-    <!-- فلتر التخصص الطبي -->
+    <!-- فلتر التخصص الطبي (أزرار أفقية سريعة + قائمة منسدلة) -->
     <div class="specialty-filter-bar" id="specialtyFilterWrapper">
-      <div class="specialty-select-box">
+      <!-- أزرار التخصصات السريعة بالأيقونات -->
+      <div class="specialty-chips-scroll" id="specialtyChipsContainer">
+        <!-- يتم التحميل ديناميكياً بالأيقونات والأسماء -->
+      </div>
+
+      <div class="specialty-select-box mt-1">
         <i class="fa-solid fa-stethoscope specialty-icon"></i>
         <select id="specialtySelect" class="form-select specialty-dropdown" aria-label="تصفية حسب التخصص الطبي">
           <option value="all">🩺 كل التخصصات الطبية (عرض الكل)</option>
@@ -117,8 +122,8 @@
       <span class="badge-counter" id="providersCountBadge">جاري التحميل...</span>
     </div>
 
-    <!-- بطاقات الجهات والأطباء والمستشفيات -->
-    <div class="providers-grid" id="providersListContainer">
+    <!-- حاوية عرض الأطباء والمراكز مقسمة تحت كل تخصص بالأيقونة الخاصة به -->
+    <div id="providersListContainer">
       <!-- يتم عرض كروت الأطباء والمراكز هنا -->
     </div>
 

@@ -105,7 +105,7 @@ const generalOfferings = [
     discountLabel: "خصم 30% على كل شغل المعمل",
     icon: "fa-solid fa-vial-circle-check",
     category: "labs",
-    details: "كل شغل المعمل يتم تنفيذه في (معمل شلبي) و (معمل مبرة العصافرة) بأعلى معايير الدقة والجودة."
+    details: "كل شغل المعمل يتم تنفيذه بأعلى معايير الدقة والجودة."
   },
   {
     title: "صيدليات خارجية",

@@ -108,8 +108,32 @@ async function fetchLiveGoogleSheetData() {
       }
 
       if (parsedItems.length > 0) {
-        // قراءة وتعيين البيانات فقط وحصرياً من Google Sheets
-        allProviders = parsedItems;
+        // منع التكرار بذكاء: في حالة تكرار اسم الطبيب في الشيت نأخذ السطر الأحدث والأكثر تفصيلاً
+        const uniqueMap = new Map();
+        for (const item of parsedItems) {
+          // تنظيف الاسم للمقارنة (تجاهل د./دكتور والمسافات والهمزات)
+          const normName = item.name
+            .replace(/^(د\.|\s*دكتور\s*)/, '')
+            .replace(/[إأآا]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/ى/g, 'ي')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase();
+
+          if (uniqueMap.has(normName)) {
+            const existing = uniqueMap.get(normName);
+            // نفضل السطر الذي له تخصص دقيق ومحدد وليس عاماً، أو به بيانات تواصل ومواعيد أحدث
+            const isMoreSpecific = item.type && !item.type.includes('استشارات تخصصية') && !item.type.includes('جهة معتمدة');
+            if (isMoreSpecific || (!existing.phone && item.phone) || (item.notes && !existing.notes)) {
+              uniqueMap.set(normName, item);
+            }
+          } else {
+            uniqueMap.set(normName, item);
+          }
+        }
+
+        allProviders = Array.from(uniqueMap.values());
         isGoogleSheetConnected = true;
 
         updateCategoryCounts();
